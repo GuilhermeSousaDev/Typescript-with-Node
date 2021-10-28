@@ -1,3 +1,3 @@
 import { App } from '../src/app'
 
-new App().getApp
+new App()

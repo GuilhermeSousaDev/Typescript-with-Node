@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser'
 import mongoose from 'mongoose';
 import { mongoURI } from './config/config'
 
 import userRoute from './routes/user.route'
+import messageRoute from './routes/message.route'
 
 export class App {
   private express: express.Application
-  private port = 9090
+  private port = 8081
 
   constructor() {
     this.express = express() 
@@ -18,23 +18,20 @@ export class App {
     this.listen()
   }
 
-  public getApp(): express.Application {
-    return this.express
-  }
-
   private database() :void {
     mongoose.connect(mongoURI).then(() => console.log("Conectado com Sucesso"))
   }
 
   private middlewares() :void {
       this.express.use(cors())
-      this.express.use(express.json())
-      this.express.use(bodyParser.urlencoded({ extended: false }))
-      this.express.use(bodyParser.json())
   }
 
   private routes() :void {
+    this.express.use(express.json())
+    this.express.use(express.urlencoded())
+    //routes
     this.express.use('/user', userRoute)
+    this.express.use('/message', messageRoute)
   }
 
   private listen() :void {
