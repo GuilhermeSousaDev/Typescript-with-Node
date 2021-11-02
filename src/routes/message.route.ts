@@ -1,10 +1,10 @@
 import { Router } from "express";
 import messageController from '../controllers/message.controller'
-import AuthByToken from '../middlewares/auth.middlewars'
+import Auth from '../middlewares/auth.middlewars'
 
 const router = Router()
 
-router.get('/', AuthByToken, messageController.teste)
-router.post('/:id', AuthByToken , messageController.send)
+router.post('/:id', Auth.AuthByParams, Auth.AuthByToken , messageController.send)
+router.get('/:destinatario_id', Auth.AuthByToken, Auth.AuthByParams, messageController.getMessages)
 
 export default router;

@@ -11,7 +11,7 @@ class Auth {
         return jwt.sign(token, global.SECRET, { expiresIn: '1d' })
     }
 
-    public decoded(token: string): void {
+    public decoded(token: string): string | void {
         jwt.verify(token, global.SECRET, (err: any, decoded: any) => {
             if(err) {
                 console.log(err)

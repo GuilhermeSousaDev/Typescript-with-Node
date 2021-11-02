@@ -1,4 +1,7 @@
 import { Schema, model } from 'mongoose'
+import { MessageInterface } from '../interfaces/messages.interface'
+
+interface MessageModel extends MessageInterface, Document {}
 
 const schema = new Schema({
     text: {
