@@ -1,7 +1,9 @@
 import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import UserSchema from '../models/user.model'
+import messageModel from '../models/mensagem.model'
 import Auth from '../config/auth'
+import searchChat from '../repositories/searchChat'
 
 class UsuarioController {
 
@@ -48,6 +50,33 @@ class UsuarioController {
         }catch (e) {
             return res.send(e)
         }
+    }
+
+    public getById(req: Request, res: Response): Response {
+        return res.json(req.userChat)
+    }
+
+    public async list(req: Request, res: Response): Promise<Response> {
+        const user_id = req.user._id
+
+        const users = await UserSchema.find({ _id: { $ne: user_id } })
+
+        const messageUsers = users.map(user => {
+            return searchChat.search(user_id, user._id)
+                .sort('-createdAt')
+                .limit(1)
+                .map((message: any[]) => {
+                    return {
+                        _id: user.id,
+                        name: user.name,
+                        avatar: user.avatar,
+                        lastMessage: message[0].text? message[0].text : null,
+                        dateLastMessage: message[0].createdAt? message[0].createdAt : null
+                    }
+                })
+        })
+
+        return res.json(users)
     }
 }
 export default new UsuarioController()

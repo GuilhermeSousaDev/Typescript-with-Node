@@ -5,6 +5,6 @@ import Auth from '../middlewares/auth.middlewars'
 const router = Router()
 
 router.post('/:id', Auth.AuthByParams, Auth.AuthByToken , messageController.send)
-router.get('/:destinatario_id', Auth.AuthByToken, Auth.AuthByParams, messageController.getMessages)
+router.get('/:id', Auth.AuthByToken, Auth.AuthByParams, messageController.getMessages)
 
 export default router;

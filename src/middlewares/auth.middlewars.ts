@@ -15,7 +15,7 @@ class AuthMiddleware {
             return res.status(401).send({ message: "Acesso Restrito" })
         }
         try {
-            const userToken = jwt.verify(token, global.SECRET) as unknown as UserInterface;
+            const userToken: any = jwt.verify(token, global.SECRET) as unknown as UserInterface;
             const user =  await userModel.findById(userToken._id).lean()
             if(!user) {
                 return res.status(400).send({ message: "Usuário não existe" })
