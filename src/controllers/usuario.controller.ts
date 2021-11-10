@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import UserSchema from '../models/user.model'
 import messageModel from '../models/mensagem.model'
 import Auth from '../config/auth'
-import searchChat from '../repositories/searchChat'
+//import searchChat from '../repositories/searchChat'
 
 class UsuarioController {
 
@@ -61,9 +61,13 @@ class UsuarioController {
 
         const users = await UserSchema.find({ _id: { $ne: user_id } })
 
-        const messageUsers = users.map(user => {
-            return searchChat.search(user_id, user._id)
-                .sort('-createdAt')
+        const ResolvePromiseMessagesAll = await Promise.all(users.map(user => {
+            messageModel.find({
+                $or: [
+                    { $and: [{ remetente: user_id }, { destinatario: user._id }] },
+                    { $and: [{ remetente: user._id }, { destinatario: user_id }] }
+                ]
+            }).sort('-createdAt')
                 .limit(1)
                 .map((message: any[]) => {
                     return {
@@ -74,9 +78,9 @@ class UsuarioController {
                         dateLastMessage: message[0].createdAt? message[0].createdAt : null
                     }
                 })
-        })
+        }))
 
-        return res.json(users)
+        return res.json(ResolvePromiseMessagesAll)
     }
 }
 export default new UsuarioController()

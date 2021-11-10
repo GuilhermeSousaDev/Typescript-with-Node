@@ -29,6 +29,8 @@ class Message {
         const user_id = req.user._id
         const userChat_id = req.userChat._id
 
+        
+
         const docs = await searchChat.search(user_id, userChat_id).sort('createAt')
 
         /*const doc = await message.find({ 
